@@ -49,8 +49,6 @@ my_flatten([], []).
 my_flatten([H|T], FlatList) :- is_list(H), !, my_flatten(H, Hflat), my_flatten(T, Tflat), append(Hflat, Tflat, FlatList).
 my_flatten([H|T], [H|Tflat]) :- my_flatten(T, Tflat).
 
-% TODO difference list version
-
 % 1.08 Eliminate consecutive duplicates of list elements
 % compress(List, CompressedList).
 compress([], []).
@@ -89,4 +87,59 @@ duplicate([H|T], [H, H|TD]) :- duplicate(T, TD).
 
 % 1.15 Duplicate the elements of a list the given number of times
 % dupN(List, N, NDupedList)
+dupEl(E, 1, [E]).
+dupEl(E, N, [E|DupedEl]) :- N > 1, N2 is N-1, dupEl(E, N2, DupedEl). 
 
+dupN([], _, []).
+dupN([H|T], N, DupedList) :- dupEl(H, N, DupedH), dupN(T, N, DupedT), append(DupedH, DupedT, DupedList). 
+
+% 1.16 Drop every Nth element from a list
+% drop(List, N, DroppedList).
+drop(List, N, DroppedList) :- N > 1, drop(List, N, N, DroppedList).
+
+drop([], _, _, []).
+drop([_|T], 1, N, DroppedT) :- drop(T, N, N, DroppedT).
+drop([H|T], X, N, [H|DroppedT]) :- X2 is X-1, drop(T, X2, N, DroppedT). 
+
+% 1.17 Split a list into two parts
+% split(List, Size, FirstPart, SecondPart).
+split(List, 0, [], List).
+split([H|T], Size, [H|T2], SecondPart) :- Size2 is Size - 1, split(T, Size2, T2, SecondPart). 
+
+% Inefficient version (generate-and-test algorithm)
+splitGAT(List, Size, FirstPart, SecondPart) :- append(FirstPart, SecondPart, List), length(FirstPart, Size).
+
+% 1.18 Extract a slice from a list.  List is 1-indexed, ends are inclusive
+% slice(List, Start, End, Slice).  
+% TODO sanity checking on numbers (no negatives, Start and End less than length, Start less than End)
+slice(List, Start, End, Slice) :- split(List, End, FirstTwoParts, _), split(FirstTwoParts, Start-1, _, Slice).
+
+% 1.19 Rotate a list N places
+% rotate(List, N, RotatedList).
+% TODO sanity checking on N
+% TODO support negative N
+rotate(List, N, RotatedList) :- split(List, N, FirstPart, SecondPart), append(SecondPart, FirstPart, RotatedList).
+
+% 1.20 Remove the Kth element from a list
+% remove_at(Element, List, Index, ResultList).
+% TODO
+
+% 1.21 Insert an element at a given position in a list
+% insert_at(Element, List, Index, ResultList).
+% TODO
+
+% 1.22 Create a list containing all integers in a given range
+% range(Start, End, ResultList).
+% TODO
+
+% 1.23 Extract a given number of randomly selected elements from a list.  The selected items shall be put into a result list
+% rnd_select(List, Number, ResultList).
+% TODO
+
+% 1.24 Lotto: Draw N different random numbers from the list 1 to M
+% lotto(N, M, ResultList).
+% TODO
+
+% 1.25 Generate a random permutation of the elements of a list
+% rnd_permute(List, Permutation)
+% TODO
