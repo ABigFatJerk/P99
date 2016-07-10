@@ -120,26 +120,48 @@ slice(List, Start, End, Slice) :- split(List, End, FirstTwoParts, _), split(Firs
 % TODO support negative N
 rotate(List, N, RotatedList) :- split(List, N, FirstPart, SecondPart), append(SecondPart, FirstPart, RotatedList).
 
-% 1.20 Remove the Kth element from a list
+% 1.20 Remove the Kth element from a list (1-indexed)
 % remove_at(Element, List, Index, ResultList).
-% TODO
+remove_at(H, [H|T], 1, T).
+remove_at(El, [H|T], N, [H|TR]) :- N > 1, N2 is N-1, remove_at(El, T, N2, TR).
 
-% 1.21 Insert an element at a given position in a list
+% 1.21 Insert an element at a given position in a list (1-indexed)
 % insert_at(Element, List, Index, ResultList).
-% TODO
+insert_at(El, List, 1, [El|List]).
+insert_at(El, [H|T], N, [H|TI]) :- N > 1, N2 is N-1, insert_at(El, T, N2, TI).
 
-% 1.22 Create a list containing all integers in a given range
+% 1.22 Create a list containing all integers in a given range (inclusive of endpoints)
 % range(Start, End, ResultList).
-% TODO
+% TODO sanity checks on values
+range(End, End, [End]).
+range(Start, End, [Start|ER]) :- S2 is Start+1, range(S2, End, ER).
 
 % 1.23 Extract a given number of randomly selected elements from a list.  The selected items shall be put into a result list
-% rnd_select(List, Number, ResultList).
-% TODO
+% rnd_select(List, Number, ResultList).=
+rnd_index(List, Index) :- length(List, LL), End is LL + 1, random(1, End, Index).
+
+rnd_select(List, 1, [Element]) :- rnd_index(List, Index), remove_at(Element, List, Index, _).
+rnd_select(List, N, [Element|TR]) :- N > 1, rnd_index(List, Index), remove_at(Element, List, Index, Remain), N2 is N-1, rnd_select(Remain, N2, TR).
 
 % 1.24 Lotto: Draw N different random numbers from the list 1 to M
 % lotto(N, M, ResultList).
-% TODO
+% TODO sanity checks on numbers
+lotto(N, M, Lotto) :- range(1, M, Numbers), rnd_select(Numbers, N, Lotto).
 
 % 1.25 Generate a random permutation of the elements of a list
 % rnd_permute(List, Permutation)
+rnd_permute(List, Permutation) :- length(List, LL), rnd_select(List, LL, Permutation).
+
+% 1.26 Generate the combinations of K distinct objects chosen from the N elements of a list
+% combination(Number, List, ResultList).
+% TODO
+
+% 1.27 Group the elements of a set into disjoint subsets
+% TODO
+
+% 1.28 Sort a list of lists according to the length of sublists
+% TODO
+
+% 4.01 Check whether a given term represents a binary tree
+% istree(TreeCandidate).
 % TODO
