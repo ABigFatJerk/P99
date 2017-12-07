@@ -164,4 +164,8 @@ rnd_permute(List, Permutation) :- length(List, LL), rnd_select(List, LL, Permuta
 
 % 4.01 Check whether a given term represents a binary tree
 % istree(TreeCandidate).
+istree(nil).
+istree(t(_, Left, Right)) :- istree(Left), istree(Right).
+
+% 4.02 Construct balanced binary tree
 % TODO
