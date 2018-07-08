@@ -168,4 +168,19 @@ istree(nil).
 istree(t(_, Left, Right)) :- istree(Left), istree(Right).
 
 % 4.02 Construct balanced binary tree
-% TODO
+% cbal_tree(Size, Tree).
+is_odd(Number) :- 1 is Number mod 2.
+
+cbal_tree(1, t(x, nil, nil)) :- !.
+cbal_tree(2, t(x, t(x, nil, nil), nil)).
+cbal_tree(2, t(x, nil, t(x, nil, nil))).
+cbal_tree(Size, t(x, LeftTree, RightTree)) :- Size > 2, is_odd(Size), !, SubSize is div((Size - 1), 2), cbal_tree(SubSize, LeftTree), cbal_tree(SubSize, RightTree).
+cbal_tree(Size, t(x, LeftTree, RightTree)) :- Size > 2, SmallSubSize is div((Size - 1), 2), LargeSubSize is SmallSubSize + 1, cbal_tree(SmallSubSize, LeftTree), cbal_tree(LargeSubSize, RightTree).
+cbal_tree(Size, t(x, LeftTree, RightTree)) :- Size > 2, SmallSubSize is div((Size - 1), 2), LargeSubSize is SmallSubSize + 1, cbal_tree(LargeSubSize, LeftTree), cbal_tree(SmallSubSize, RightTree).
+
+% 4.03 Symmetric binary trees
+% symmetric(Tree).
+mirror(nil, nil).
+mirror(t(_, LT1, RT1), t(_, LT2, RT2)) :- mirror(LT1, RT2), mirror(RT1, LT2).
+
+symmetric(t(_, LeftTree, RightTree)) :- mirror(LeftTree, RightTree).
